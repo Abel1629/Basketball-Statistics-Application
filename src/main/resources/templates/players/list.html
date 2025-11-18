@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+<body>
+<h2>Players</h2>
+<a th:href="@{/players/create}">Create player</a>
+<table>
+    <thead><tr><th>ID</th><th>Name</th><th>Pos</th><th>Number</th><th>Team</th><th>Actions</th></tr></thead>
+    <tbody>
+    <tr th:each="p : ${players}">
+        <td th:text="${p.id}"></td>
+        <td th:text="${p.firstName + ' ' + p.lastName}"></td>
+        <td th:text="${p.position}"></td>
+        <td th:text="${p.number}"></td>
+        <td th:text="${p.team != null ? p.team.name : ''}"></td>
+        <td>
+            <a th:href="@{'/players/edit/' + ${p.id}}">Edit</a>
+            <form th:action="@{'/players/delete/' + ${p.id}}" method="post"
+                  style="display:inline">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

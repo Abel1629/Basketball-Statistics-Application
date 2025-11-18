@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+<body>
+<h2>Create BoxScore</h2>
+<form th:action="@{/boxscores/save}" method="post" th:object="${boxscore}">
+    <div>
+        <label>Game:
+            <select th:field="*{game}">
+                <option th:each="g : ${games}" th:value="${g}"
+                        th:text="${g.id + ' - ' + (g.homeTeam != null ? g.homeTeam.name : '') + ' vs ' +
+(g.awayTeam != null ? g.awayTeam.name : '')}"></option>
+            </select>
+        </label>
+    </div>
+    <div>
+        <label>Player:
+            <select th:field="*{player}">
+                <option th:each="p : ${players}" th:value="${p}" th:text="$
+{p.firstName + ' ' + p.lastName}"></option>
+            </select>
+        </label>
+    </div>
+    <div><label>Points: <input th:field="*{points}"/></label></div>
+    <div><label>Rebounds: <input th:field="*{rebounds}"/></label></div>
+    <div><label>Assists: <input th:field="*{assists}"/></label></div>
+    <div><button type="submit">Save Draft</button></div>
+</form>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+<body>
+<h2 th:text="${team.id} == null ? 'Create Team' : 'Edit Team'"></h2>
+<form th:action="@{/teams/save}" method="post" th:object="${team}">
+    <input type="hidden" th:field="*{id}" />
+    <div><label>Name: <input th:field="*{name}"/></label></div>
+    <div><label>City: <input th:field="*{city}"/></label></div>
+    <div><button type="submit">Save</button></div>
+</form>
+</body>
+</html>
