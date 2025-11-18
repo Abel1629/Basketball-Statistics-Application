@@ -1,8 +1,10 @@
 package com.statsproject.statsproject.controller;
 
 
+import com.statsproject.statsproject.entity.Game;
 import com.statsproject.statsproject.entity.Player;
 import com.statsproject.statsproject.entity.Team;
+import com.statsproject.statsproject.repository.GameRepository;
 import com.statsproject.statsproject.repository.PlayerRepository;
 import com.statsproject.statsproject.repository.TeamRepository;
 import org.springframework.stereotype.Controller;
@@ -15,10 +17,14 @@ import java.util.List;
 @RequestMapping("/teams")
 public class TeamController {
     private final TeamRepository repo;
-    public TeamController(TeamRepository repo, PlayerRepository playerRepo) { this.repo = repo;
-        this.playerRepo = playerRepo;
-    }
     private final PlayerRepository playerRepo;
+    private final GameRepository gameRepo;
+    public TeamController(TeamRepository repo, PlayerRepository playerRepo, GameRepository gameRepo) {
+        this.repo = repo;
+        this.playerRepo = playerRepo;
+        this.gameRepo = gameRepo;
+    }
+
     @GetMapping
     public String list(Model m) {
         m.addAttribute("teams", repo.findAll());
@@ -41,12 +47,23 @@ public class TeamController {
     }
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
-        // First delete players that reference this team to avoid FK violation
+
+        // 1) Delete players of this team
         List<Player> players = playerRepo.findByTeam_Id(id);
         if (!players.isEmpty()) {
             playerRepo.deleteAll(players);
         }
+
+        // 2) Delete games where this team is either home or away
+        List<Game> games = gameRepo.findByHomeTeam_IdOrAwayTeam_Id(id, id);
+        if (!games.isEmpty()) {
+            gameRepo.deleteAll(games);
+        }
+
+        // 3) Delete the team itself
         repo.deleteById(id);
+
         return "redirect:/teams";
     }
+
 }

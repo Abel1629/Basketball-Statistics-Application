@@ -26,8 +26,12 @@ public class PlayerController {
         return "players/form";
     }
     @PostMapping("/save")
-    public String save(@ModelAttribute Player player) {
-// when the player has a team id set in the form it will be bound to team object with the id only; ensure JPA merges properly
+    public String save(@ModelAttribute Player player, @RequestParam(required = false) Long teamId) {
+        if (teamId != null) {
+            teamRepo.findById(teamId).ifPresent(player::setTeam);
+        } else {
+            player.setTeam(null);
+        }
         playerRepo.save(player);
         return "redirect:/players";
     }
