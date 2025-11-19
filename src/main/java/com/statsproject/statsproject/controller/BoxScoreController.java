@@ -1,6 +1,8 @@
 package com.statsproject.statsproject.controller;
 
 import com.statsproject.statsproject.entity.BoxScore;
+import com.statsproject.statsproject.entity.Game;
+import com.statsproject.statsproject.entity.Player;
 import com.statsproject.statsproject.repository.BoxScoreRepository;
 import com.statsproject.statsproject.repository.GameRepository;
 import com.statsproject.statsproject.repository.PlayerRepository;
@@ -16,10 +18,12 @@ public class BoxScoreController {
     private final GameRepository gameRepo;
     private final PlayerRepository playerRepo;
     private final BoxScoreService service;
+    private final BoxScoreRepository boxScoreRepo;
     public BoxScoreController(BoxScoreRepository repo, GameRepository gameRepo,
-                              PlayerRepository playerRepo, BoxScoreService service) {
+                              PlayerRepository playerRepo, BoxScoreService service, BoxScoreRepository boxScoreRepo) {
         this.repo = repo; this.gameRepo = gameRepo; this.playerRepo =
                 playerRepo; this.service = service;
+        this.boxScoreRepo = boxScoreRepo;
     }
     @GetMapping
     public String list(Model m) {
@@ -34,11 +38,24 @@ public class BoxScoreController {
         return "boxscores/form";
     }
     @PostMapping("/save")
-    public String save(@ModelAttribute BoxScore boxScore, Principal principal) {
-        boxScore.setCreatedBy(principal.getName());
-        service.saveDraft(boxScore);
+    public String save(@ModelAttribute BoxScore boxScore,
+                       @RequestParam Long gameId,
+                       @RequestParam Long playerId,
+                       Principal principal) {
+
+        Game game = gameRepo.findById(gameId)
+                .orElseThrow(() -> new RuntimeException("Game not found"));
+
+        Player player = playerRepo.findById(playerId)
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+
+        boxScore.setGame(game);
+        boxScore.setPlayer(player);
+        boxScoreRepo.save(boxScore);
+
         return "redirect:/boxscores";
     }
+
 
     @PostMapping("/{id}/submit")
     public String submit(@PathVariable Long id, Principal principal) {

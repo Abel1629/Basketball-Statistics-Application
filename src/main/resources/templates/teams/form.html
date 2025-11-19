@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
 <body>
+<a th:href="@{/teams}">Abort</a>
 <h2 th:text="${team.id} == null ? 'Create Team' : 'Edit Team'"></h2>
 <form th:action="@{/teams/save}" method="post" th:object="${team}">
     <input type="hidden" th:field="*{id}" />

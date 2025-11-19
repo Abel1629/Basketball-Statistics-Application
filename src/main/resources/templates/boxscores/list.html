@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
 <body>
+<a th:href="@{/home}">Home</a>
 <h2>BoxScores</h2>
 <a th:href="@{/boxscores/create}">Create BoxScore</a>
 <table>
@@ -9,19 +10,16 @@
     <tr th:each="b : ${boxscores}">
         <td th:text="${b.id}"></td>
         <td th:text="${b.game != null ? b.game.id : ''}"></td>
-        <td th:text="${b.player != null ? b.player.firstName + ' ' +
-b.player.lastName : ''}"></td>
+        <td th:text="${b.player != null ? b.player.firstName + ' ' +b.player.lastName : ''}"></td>
         <td th:text="${b.points}"></td>
         <td th:text="${b.rebounds}"></td>
         <td th:text="${b.assists}"></td>
         <td th:text="${b.status}"></td>
         <td>
-            <form th:action="@{'/boxscores/' + ${b.id} + '/submit'}"
-                  method="post" style="display:inline">
+            <form th:action="@{'/boxscores/' + ${b.id} + '/submit'}" method="post" style="display:inline">
                 <button type="submit">Submit</button>
             </form>
-            <form th:action="@{'/boxscores/' + ${b.id} + '/approve'}"
-                  method="post" style="display:inline">
+            <form th:action="@{'/boxscores/' + ${b.id} + '/approve'}" method="post" style="display:inline">
                 <button type="submit">Approve</button>
             </form>
         </td>

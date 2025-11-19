@@ -12,8 +12,7 @@
     <a th:href="@{/players}">Players</a> |
     <a th:href="@{/boxscores}">BoxScores</a> |
     <span th:if="${#request.remoteUser == null}"><a th:href="@{/login}">Login</a></span>
-    <span th:if="${#request.remoteUser != null}">Logged as <b th:text="$
-{#request.remoteUser}"></b> - <a th:href="@{/logout}">Logout</a></span>
+    <span th:if="${#request.remoteUser != null}">Logged as <b th:text="${#request.remoteUser}"></b> - <a th:href="@{/logout}">Logout</a></span>
 </nav>
 <hr/>
 <div th:replace="~{::content}"></div>

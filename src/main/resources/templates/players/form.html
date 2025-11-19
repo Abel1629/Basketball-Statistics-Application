@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
 <body>
+<a th:href="@{/players}">Abort</a>
 <h2 th:text="${player.id} == null ? 'Create Player' : 'Edit Player'"></h2>
 <form th:action="@{/players/save}" method="post" th:object="${player}">
     <input type="hidden" th:field="*{id}" />
@@ -10,9 +11,9 @@
     <div><label>Number: <input th:field="*{number}"/></label></div>
     <div>
         <label>Team:
-            <select th:field="*{team}" th:object="${player}">
-                <option th:each="t : ${teams}" th:value="${t}" th:text="$
-{t.name}"></option>
+            <select name="teamId" class="form-control">
+                <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}">
+                </option>
             </select>
         </label>
     </div>

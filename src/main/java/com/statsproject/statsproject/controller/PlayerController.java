@@ -1,6 +1,7 @@
 package com.statsproject.statsproject.controller;
 
 import com.statsproject.statsproject.entity.Player;
+import com.statsproject.statsproject.entity.Team;
 import com.statsproject.statsproject.repository.PlayerRepository;
 import com.statsproject.statsproject.repository.TeamRepository;
 import org.springframework.stereotype.Controller;
@@ -26,15 +27,17 @@ public class PlayerController {
         return "players/form";
     }
     @PostMapping("/save")
-    public String save(@ModelAttribute Player player, @RequestParam(required = false) Long teamId) {
-        if (teamId != null) {
-            teamRepo.findById(teamId).ifPresent(player::setTeam);
-        } else {
-            player.setTeam(null);
-        }
+    public String save(@ModelAttribute Player player,
+                       @RequestParam Long teamId) {
+
+        Team team = teamRepo.findById(teamId)
+                .orElseThrow(() -> new RuntimeException("Team not found"));
+
+        player.setTeam(team);
         playerRepo.save(player);
         return "redirect:/players";
     }
+
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model m) {
         playerRepo.findById(id).ifPresent(p -> m.addAttribute("player", p));

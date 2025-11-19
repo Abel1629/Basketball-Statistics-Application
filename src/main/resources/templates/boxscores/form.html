@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
 <body>
+<a th:href="@{/boxscores}">Abort</a>
 <h2>Create BoxScore</h2>
 <form th:action="@{/boxscores/save}" method="post" th:object="${boxscore}">
     <div>
         <label>Game:
             <select th:field="*{game}">
-                <option th:each="g : ${games}" th:value="${g}"
-                        th:text="${g.id + ' - ' + (g.homeTeam != null ? g.homeTeam.name : '') + ' vs ' +
-(g.awayTeam != null ? g.awayTeam.name : '')}"></option>
+                <option th:each="g : ${games}" th:value="${g}" th:text="${g.id + ' - ' + (g.homeTeam != null ? g.homeTeam.name : '') + ' vs ' +(g.awayTeam != null ? g.awayTeam.name : '')}"></option>
             </select>
         </label>
     </div>
     <div>
         <label>Player:
-            <select th:field="*{player}">
-                <option th:each="p : ${players}" th:value="${p}" th:text="$
-{p.firstName + ' ' + p.lastName}"></option>
+            <select name="gameId" class="form-control">
+                <option th:each="g : ${games}" th:value="${g.id}" th:text="${g.homeTeam.name} + ' vs ' + ${g.awayTeam.name}">
+                </option>
             </select>
+
+            <select name="playerId" class="form-control">
+                <option th:each="p : ${players}" th:value="${p.id}" th:text="${p.firstName} + ' ' + ${p.lastName}">
+                </option>
+            </select>
+
         </label>
     </div>
     <div><label>Points: <input th:field="*{points}"/></label></div>

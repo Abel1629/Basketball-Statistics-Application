@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
 <body>
+<a th:href="@{/home}">Home</a>
 <h2>Players</h2>
 <a th:href="@{/players/create}">Create player</a>
 <table>
@@ -14,8 +15,7 @@
         <td th:text="${p.team != null ? p.team.name : ''}"></td>
         <td>
             <a th:href="@{'/players/edit/' + ${p.id}}">Edit</a>
-            <form th:action="@{'/players/delete/' + ${p.id}}" method="post"
-                  style="display:inline">
+            <form th:action="@{'/players/delete/' + ${p.id}}" method="post" style="display:inline">
                 <button type="submit">Delete</button>
             </form>
         </td>
