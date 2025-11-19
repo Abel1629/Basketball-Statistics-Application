@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Game</title>
+</head>
+<body>
+
+<a th:href="@{/games}">Abort</a>
+
+<h1>Create Game</h1>
+
+<form th:action="@{/games/save}" method="post" th:object="${game}">
+
+    <!-- Date & Time -->
+    <label>Date & Time:</label>
+    <input type="datetime-local" name="dateTime" required />
+    <br><br>
+
+    <!-- Home Team -->
+    <label>Home Team:</label>
+    <select name="homeTeamId" required>
+        <option th:each="t : ${teams}"
+                th:value="${t.id}"
+                th:text="${t.name}">
+        </option>
+    </select>
+    <br><br>
+
+    <!-- Away Team -->
+    <label>Away Team:</label>
+    <select name="awayTeamId" required>
+        <option th:each="t : ${teams}"
+                th:value="${t.id}"
+                th:text="${t.name}">
+        </option>
+    </select>
+    <br><br>
+
+    <!-- Home Score -->
+    <label>Home Score:</label>
+    <input type="number" name="homeScore" required />
+    <br><br>
+
+    <!-- Away Score -->
+    <label>Away Score:</label>
+    <input type="number" name="awayScore" required />
+    <br><br>
+
+    <button type="submit">Save</button>
+</form>
+
+</body>
+</html>

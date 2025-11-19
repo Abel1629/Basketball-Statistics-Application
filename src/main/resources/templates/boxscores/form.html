@@ -1,34 +1,59 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Box Score</title>
+</head>
 <body>
+
 <a th:href="@{/boxscores}">Abort</a>
-<h2>Create BoxScore</h2>
+
+<h1>Create Box Score</h1>
+
 <form th:action="@{/boxscores/save}" method="post" th:object="${boxscore}">
-    <div>
-        <label>Game:
-            <select th:field="*{game}">
-                <option th:each="g : ${games}" th:value="${g}" th:text="${g.id + ' - ' + (g.homeTeam != null ? g.homeTeam.name : '') + ' vs ' +(g.awayTeam != null ? g.awayTeam.name : '')}"></option>
-            </select>
-        </label>
-    </div>
-    <div>
-        <label>Player:
-            <select name="gameId" class="form-control">
-                <option th:each="g : ${games}" th:value="${g.id}" th:text="${g.homeTeam.name} + ' vs ' + ${g.awayTeam.name}">
-                </option>
-            </select>
 
-            <select name="playerId" class="form-control">
-                <option th:each="p : ${players}" th:value="${p.id}" th:text="${p.firstName} + ' ' + ${p.lastName}">
-                </option>
-            </select>
+    <!-- Select game -->
+    <label>Game:</label>
+    <select name="gameId" required>
+        <option th:each="g : ${games}"
+                th:value="${g.id}"
+                th:text="${g.homeTeam.name + ' vs ' + g.awayTeam.name}">
+        </option>
+    </select>
 
-        </label>
-    </div>
-    <div><label>Points: <input th:field="*{points}"/></label></div>
-    <div><label>Rebounds: <input th:field="*{rebounds}"/></label></div>
-    <div><label>Assists: <input th:field="*{assists}"/></label></div>
-    <div><button type="submit">Save Draft</button></div>
+    <br><br>
+
+    <!-- Select player -->
+    <label>Player:</label>
+    <select name="playerId" required>
+        <option th:each="p : ${players}"
+                th:value="${p.id}"
+                th:text="${p.firstName + ' ' + p.lastName}">
+        </option>
+    </select>
+
+    <br><br>
+
+    <!-- Points -->
+    <label>Points:</label>
+    <input type="number" th:field="*{points}" required/>
+
+    <br><br>
+
+    <!-- Rebounds -->
+    <label>Rebounds:</label>
+    <input type="number" th:field="*{rebounds}" required/>
+
+    <br><br>
+
+    <!-- Assists -->
+    <label>Assists:</label>
+    <input type="number" th:field="*{assists}" required/>
+
+    <br><br>
+
+    <button type="submit">Save</button>
+
 </form>
+
 </body>
 </html>

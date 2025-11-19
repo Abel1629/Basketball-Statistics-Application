@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Games</title>
+</head>
+<body>
+
+<a th:href="@{/home}">Home</a>
+
+<h1>Games</h1>
+
+<a href="/games/create">Create New Game</a>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Home Team</th>
+        <th>Away Team</th>
+        <th>Home Score</th>
+        <th>Away Score</th>
+        <th>Actions</th>
+    </tr>
+
+    <tr th:each="g : ${games}">
+        <td th:text="${g.id}"></td>
+        <td th:text="${#temporals.format(g.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${g.homeTeam.name}"></td>
+        <td th:text="${g.awayTeam.name}"></td>
+        <td th:text="${g.homeScore}"></td>
+        <td th:text="${g.awayScore}"></td>
+
+        <td>
+            <a th:href="@{'/games/delete/' + ${g.id}}">Delete</a>
+        </td>
+    </tr>
+
+</table>
+
+</body>
+</html>

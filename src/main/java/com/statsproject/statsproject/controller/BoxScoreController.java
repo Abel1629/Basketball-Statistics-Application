@@ -43,19 +43,15 @@ public class BoxScoreController {
                        @RequestParam Long playerId,
                        Principal principal) {
 
-        Game game = gameRepo.findById(gameId)
-                .orElseThrow(() -> new RuntimeException("Game not found"));
-
-        Player player = playerRepo.findById(playerId)
-                .orElseThrow(() -> new RuntimeException("Player not found"));
+        Game game = gameRepo.findById(gameId).orElseThrow();
+        Player player = playerRepo.findById(playerId).orElseThrow();
 
         boxScore.setGame(game);
         boxScore.setPlayer(player);
-        boxScoreRepo.save(boxScore);
 
+        boxScoreRepo.save(boxScore);
         return "redirect:/boxscores";
     }
-
 
     @PostMapping("/{id}/submit")
     public String submit(@PathVariable Long id, Principal principal) {
