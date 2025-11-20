@@ -1,30 +1,89 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BoxScores</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+
 <body>
-<a th:href="@{/home}">Home</a>
-<h2>BoxScores</h2>
-<a th:href="@{/boxscores/create}">Create BoxScore</a>
-<table>
-    <thead><tr><th>ID</th><th>Game</th><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>Status</th><th>Actions</th></tr></thead>
-    <tbody>
-    <tr th:each="b : ${boxscores}">
-        <td th:text="${b.id}"></td>
-        <td th:text="${b.game != null ? b.game.id : ''}"></td>
-        <td th:text="${b.player != null ? b.player.firstName + ' ' +b.player.lastName : ''}"></td>
-        <td th:text="${b.points}"></td>
-        <td th:text="${b.rebounds}"></td>
-        <td th:text="${b.assists}"></td>
-        <td th:text="${b.status}"></td>
-        <td>
-            <form th:action="@{'/boxscores/' + ${b.id} + '/submit'}" method="post" style="display:inline">
-                <button type="submit">Submit</button>
-            </form>
-            <form th:action="@{'/boxscores/' + ${b.id} + '/approve'}" method="post" style="display:inline">
-                <button type="submit">Approve</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+
+<nav>
+    <a href="/" class="brand">🏀 Stats Project</a>
+
+    <a href="/players">Players</a>
+    <a href="/boxscores">Box Scores</a>
+
+    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+        <a href="/teams">Teams</a>
+        <a href="/games">Games</a>
+    </sec:authorize>
+
+    <span class="right">
+        <sec:authentication property="name"/> |
+        <!-- 🔥 Same logout as HOME -->
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" style="background:none;border:none;color:#d1e7ff;cursor:pointer;">
+                Logout
+            </button>
+        </form>
+    </span>
+</nav>
+
+<div class="container">
+
+    <h2>Box Scores</h2>
+
+    <a class="btn smallspace" th:href="@{/boxscores/create}">Create BoxScore</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Game</th>
+            <th>Player</th>
+            <th>PTS</th>
+            <th>REB</th>
+            <th>AST</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="b : ${boxscores}">
+            <td th:text="${b.id}"></td>
+            <td th:text="${b.game != null ? b.game.id : ''}"></td>
+            <td th:text="${b.player != null ? b.player.firstName + ' ' + b.player.lastName : ''}"></td>
+            <td th:text="${b.points}"></td>
+            <td th:text="${b.rebounds}"></td>
+            <td th:text="${b.assists}"></td>
+            <td th:text="${b.status}"></td>
+
+            <td>
+                <!-- SUBMIT BUTTON: visible ONLY for owner + status DRAFT -->
+                <form th:if="${b.status?.name() == 'DRAFT' and b.createdBy == #authentication.name}"
+                      th:action="@{'/boxscores/' + ${b.id} + '/submit'}"
+                      method="post" style="display:inline;">
+                    <button type="submit">Submit</button>
+                </form>
+
+                <!-- APPROVE BUTTON: only visible for ADMIN -->
+                <form sec:authorize="hasRole('ADMIN')"
+                      th:if="${b.status?.name() == 'SUBMITTED'}"
+                      th:action="@{'/boxscores/' + ${b.id} + '/approve'}"
+                      method="post" style="display:inline;">
+                    <button type="submit">Approve</button>
+                </form>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
 </body>
 </html>

@@ -1,14 +1,60 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
-<body>
-<h1>Welcome to the Basketball Stats App!</h1>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<ul>
-    <li><a href="/teams">Teams</a></li>
-    <li><a href="/players">Players</a></li>
-    <li><a href="/games">Games</a></li>
-    <li><a href="/boxscores">Box Scores</a></li>
-    <li><a href="/h2-console">H2 Console</a></li>
-</ul>
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+
+<body>
+
+<nav>
+    <a href="/" class="brand">🏀 Stats Project</a>
+
+    <a href="/players">Players</a>
+    <a href="/boxscores">Box Scores</a>
+
+    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+        <a href="/teams">Teams</a>
+        <a href="/games">Games</a>
+    </sec:authorize>
+
+    <span class="right">
+        <sec:authentication property="name"/> |
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" style="background:none;border:none;color:#d1e7ff;cursor:pointer;">
+                    Logout
+                </button>
+            </form>
+    </span>
+</nav>
+
+<div class="container">
+
+    <h1>Welcome to the Basketball Stats Platform</h1>
+
+    <p class="intro">This platform allows you to manage teams, players, games, and boxscores.</p>
+
+    <h2>User Available Actions</h2>
+    <ul class="button-list">
+        <li><a class="btn" href="/players">View Players</a></li>
+        <li><a class="btn" href="/boxscores">View Box Scores</a></li>
+    </ul>
+
+    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+        <div class="bigspace">
+            <h2 style="margin-top: 40px;">Administrator Tools</h2>
+            <ul class="button-list">
+                <li><a class="btn" href="/teams">Manage Teams</a></li>
+                <li><a class="btn" href="/games">Manage Games</a></li>
+            </ul>
+        </div>
+
+    </sec:authorize>
+
+</div>
+
 </body>
 </html>

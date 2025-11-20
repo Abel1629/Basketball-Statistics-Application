@@ -4,6 +4,7 @@ import com.statsproject.statsproject.entity.Player;
 import com.statsproject.statsproject.entity.Team;
 import com.statsproject.statsproject.repository.PlayerRepository;
 import com.statsproject.statsproject.repository.TeamRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,17 @@ public class PlayerController {
         m.addAttribute("players", playerRepo.findAll());
         return "players/list";
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/create")
     public String createForm(Model m) {
         m.addAttribute("player", new Player());
         m.addAttribute("teams", teamRepo.findAll());
         return "players/form";
     }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/save")
     public String save(@ModelAttribute Player player,
                        @RequestParam Long teamId) {

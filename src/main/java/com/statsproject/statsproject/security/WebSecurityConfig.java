@@ -16,19 +16,47 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/h2-console/**").permitAll()
-                        .anyRequest().permitAll() // security disabled for now
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**") // allow H2 console
                 )
+
+                // allow H2 console to be displayed in a frame
                 .headers(headers ->
                         headers.frameOptions(frame -> frame.disable())
+                )
+
+                .authorizeHttpRequests(auth -> auth
+                        // Public pages
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/login").permitAll()
+
+                        // ROLE RESTRICTIONS
+                        .requestMatchers("/teams/**", "/games/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/players/**", "/boxscores/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+
+
+                        // EVERYTHING ELSE (including "/") requires login
+                        .anyRequest().authenticated()
+                )
+
+
+                // default login page enabled
+                .formLogin(form -> form
+                        .loginPage("/login")       // your custom login page
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
+                )
+
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
                 );
 
         return http.build();
     }
 
-    // THIS FIXES THE ERROR
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
