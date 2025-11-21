@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Access Denied</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+
+<body>
+
+<nav>
+    <a href="/" class="brand">🏀 Stats Project</a>
+
+    <a href="/players">Players</a>
+    <a href="/boxscores">Box Scores</a>
+
+    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+        <a href="/teams">Teams</a>
+        <a href="/games">Games</a>
+    </sec:authorize>
+
+    <span class="right">
+        <sec:authentication property="name"/> |
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" style="background:none;border:none;color:#d1e7ff;cursor:pointer;">
+                Logout
+            </button>
+        </form>
+    </span>
+</nav>
+
+<div class="container">
+    <h1>🚫 Access Denied</h1>
+    <p>You don’t have permission to access this page.</p>
+
+    <a class="btn" href="/">Return Home</a>
+</div>
+
+</body>
+</html>

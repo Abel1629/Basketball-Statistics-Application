@@ -7,8 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Set;
+
 @Component
 public class DataInitializer implements CommandLineRunner {
+
     private final RoleRepository roleRepo;
     private final UserRepository userRepo;
     private final PasswordEncoder encoder;
@@ -16,30 +18,58 @@ public class DataInitializer implements CommandLineRunner {
     private final PlayerRepository playerRepo;
     private final GameRepository gameRepo;
     private final BoxScoreRepository boxScoreRepo;
+
     public DataInitializer(RoleRepository roleRepo, UserRepository userRepo,
                            PasswordEncoder encoder, TeamRepository teamRepo,
-                           PlayerRepository playerRepo, GameRepository
-                                   gameRepo, BoxScoreRepository boxScoreRepo) {
-        this.roleRepo = roleRepo; this.userRepo = userRepo; this.encoder =
-                encoder;
-        this.teamRepo = teamRepo; this.playerRepo = playerRepo; this.gameRepo =
-                gameRepo;
+                           PlayerRepository playerRepo, GameRepository gameRepo,
+                           BoxScoreRepository boxScoreRepo) {
+        this.roleRepo = roleRepo;
+        this.userRepo = userRepo;
+        this.encoder = encoder;
+        this.teamRepo = teamRepo;
+        this.playerRepo = playerRepo;
+        this.gameRepo = gameRepo;
         this.boxScoreRepo = boxScoreRepo;
     }
+
     @Override
     public void run(String... args) {
-        // roles
-        Role rUser = new Role(); rUser.setName("ROLE_USER");
-        Role rAdmin = new Role(); rAdmin.setName("ROLE_ADMIN");
-        roleRepo.save(rUser); roleRepo.save(rAdmin);
 
-        // users
-        User admin = new User(); admin.setUsername("admin");
-        admin.setPassword(encoder.encode("adminpass"));
-        admin.setRoles(Set.of(rAdmin, rUser)); userRepo.save(admin);
-        User user = new User(); user.setUsername("user");
-        user.setPassword(encoder.encode("userpass"));
-        user.setRoles(Set.of(rUser)); userRepo.save(user);
+        // === ROLES (create only if missing) ===
+        // === ROLES (create only if missing) ===
+        Role rUser = roleRepo.findByName("ROLE_USER").orElseGet(() -> {
+            Role ru = new Role();
+            ru.setName("ROLE_USER");
+            return roleRepo.save(ru);
+        });
+
+        Role rAdmin = roleRepo.findByName("ROLE_ADMIN").orElseGet(() -> {
+            Role ra = new Role();
+            ra.setName("ROLE_ADMIN");
+            return roleRepo.save(ra);
+        });
+
+        // === USERS (create only if missing) ===
+        if (userRepo.findByUsername("admin").isEmpty()) {
+            User admin = new User();
+            admin.setUsername("admin");
+            admin.setPassword(encoder.encode("adminpass"));
+            admin.setRoles(Set.of(rAdmin, rUser));
+            userRepo.save(admin);
+        }
+
+        if (userRepo.findByUsername("user").isEmpty()) {
+            User user = new User();
+            user.setUsername("user");
+            user.setPassword(encoder.encode("userpass"));
+            user.setRoles(Set.of(rUser));
+            userRepo.save(user);
+        }
+
+        // === EVERYTHING BELOW RUNS ONLY IF DB WAS EMPTY ===
+        if (teamRepo.count() > 0) {
+            return; // <-- prevents duplicate teams, players, games, boxscores
+        }
 
         // sample teams
         Team t1 = new Team(); t1.setName("CSM Oradea"); t1.setCity("Oradea");
@@ -123,13 +153,12 @@ public class DataInitializer implements CommandLineRunner {
         bs6.setRebounds(10);
         bs6.setAssists(12);
 
-// you must save using repository
+        // you must save using repository
         boxScoreRepo.save(bs1);
         boxScoreRepo.save(bs2);
         boxScoreRepo.save(bs3);
         boxScoreRepo.save(bs4);
         boxScoreRepo.save(bs5);
         boxScoreRepo.save(bs6);
-
     }
 }
