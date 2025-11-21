@@ -1,41 +1,74 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <title>Games</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
 </head>
+
 <body>
 
-<a th:href="@{/home}">Home</a>
+<!-- NAVBAR -->
+<nav>
+    <a href="/" class="brand">🏀 Stats Project</a>
 
-<h1>Games</h1>
+    <a href="/players">Players</a>
+    <a href="/boxscores">Box Scores</a>
 
-<a href="/games/create">Create New Game</a>
+    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+        <a href="/teams">Teams</a>
+        <a href="/games">Games</a>
+    </sec:authorize>
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Date</th>
-        <th>Home Team</th>
-        <th>Away Team</th>
-        <th>Home Score</th>
-        <th>Away Score</th>
-        <th>Actions</th>
-    </tr>
+    <span class="right">
+        <sec:authentication property="name"/> |
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit"
+                    style="background:none;border:none;color:#d1e7ff;cursor:pointer;">
+                Logout
+            </button>
+        </form>
+    </span>
+</nav>
 
-    <tr th:each="g : ${games}">
-        <td th:text="${g.id}"></td>
-        <td th:text="${#temporals.format(g.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
-        <td th:text="${g.homeTeam.name}"></td>
-        <td th:text="${g.awayTeam.name}"></td>
-        <td th:text="${g.homeScore}"></td>
-        <td th:text="${g.awayScore}"></td>
+<div class="container">
 
-        <td>
-            <a th:href="@{'/games/delete/' + ${g.id}}">Delete</a>
-        </td>
-    </tr>
+    <h1>Games</h1>
 
-</table>
+    <a class="btn smallspace" href="/games/create">Create New Game</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Home Team</th>
+            <th>Away Team</th>
+            <th>Home Score</th>
+            <th>Away Score</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="g : ${games}">
+            <td th:text="${g.id}"></td>
+            <td th:text="${#temporals.format(g.dateTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${g.homeTeam.name}"></td>
+            <td th:text="${g.awayTeam.name}"></td>
+            <td th:text="${g.homeScore}"></td>
+            <td th:text="${g.awayScore}"></td>
+
+            <td>
+                <a th:href="@{'/games/delete/' + ${g.id}}">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+</div>
 
 </body>
 </html>

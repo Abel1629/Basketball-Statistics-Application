@@ -1,23 +1,90 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create / Edit Player</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+
 <body>
-<a th:href="@{/players}">Abort</a>
-<h2 th:text="${player.id} == null ? 'Create Player' : 'Edit Player'"></h2>
-<form th:action="@{/players/save}" method="post" th:object="${player}">
-    <input type="hidden" th:field="*{id}" />
-    <div><label>First name: <input th:field="*{firstName}"/></label></div>
-    <div><label>Last name: <input th:field="*{lastName}"/></label></div>
-    <div><label>Position: <input th:field="*{position}"/></label></div>
-    <div><label>Number: <input th:field="*{number}"/></label></div>
-    <div>
-        <label>Team:
-            <select name="teamId" class="form-control">
+
+<!-- NAVBAR -->
+<nav>
+    <a href="/" class="brand">🏀 Stats Project</a>
+
+    <a href="/players">Players</a>
+    <a href="/boxscores">Box Scores</a>
+
+    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+        <a href="/teams">Teams</a>
+        <a href="/games">Games</a>
+    </sec:authorize>
+
+    <span class="right">
+        <sec:authentication property="name"/> |
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit"
+                    style="background:none;border:none;color:#d1e7ff;cursor:pointer;">
+                Logout
+            </button>
+        </form>
+    </span>
+</nav>
+
+<div class="container">
+
+    <a th:href="@{/players}" class="btn smallspace">Abort</a>
+
+    <h2 th:text="${player.id} == null ? 'Create Player' : 'Edit Player'"></h2>
+
+    <form th:action="@{/players/save}" method="post" th:object="${player}">
+        <input type="hidden" th:field="*{id}" />
+
+        <div>
+            <label>First name:</label>
+            <input th:field="*{firstName}" required/>
+        </div>
+
+        <br>
+
+        <div>
+            <label>Last name:</label>
+            <input th:field="*{lastName}" required/>
+        </div>
+
+        <br>
+
+        <div>
+            <label>Position:</label>
+            <input th:field="*{position}" required/>
+        </div>
+
+        <br>
+
+        <div>
+            <label>Number:</label>
+            <input type="number" th:field="*{number}" required/>
+        </div>
+
+        <br>
+
+        <div>
+            <label>Team:</label>
+            <select name="teamId" required>
                 <option th:each="t : ${teams}" th:value="${t.id}" th:text="${t.name}">
                 </option>
             </select>
-        </label>
-    </div>
-    <div><button type="submit">Save</button></div>
-</form>
+        </div>
+
+        <br>
+
+        <button type="submit" class="btn">Save</button>
+
+    </form>
+
+</div>
+
 </body>
 </html>

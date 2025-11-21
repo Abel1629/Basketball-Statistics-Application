@@ -1,59 +1,82 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <title>Create Box Score</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
 </head>
+
 <body>
 
-<a th:href="@{/boxscores}">Abort</a>
+<!-- NAVBAR -->
+<nav>
+    <a href="/" class="brand">🏀 Stats Project</a>
 
-<h1>Create Box Score</h1>
+    <a href="/players">Players</a>
+    <a href="/boxscores">Box Scores</a>
 
-<form th:action="@{/boxscores/save}" method="post" th:object="${boxscore}">
+    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+        <a href="/teams">Teams</a>
+        <a href="/games">Games</a>
+    </sec:authorize>
 
-    <!-- Select game -->
-    <label>Game:</label>
-    <select name="gameId" required>
-        <option th:each="g : ${games}"
-                th:value="${g.id}"
-                th:text="${g.homeTeam.name + ' vs ' + g.awayTeam.name}">
-        </option>
-    </select>
+    <span class="right">
+        <sec:authentication property="name"/> |
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit"
+                    style="background:none;border:none;color:#d1e7ff;cursor:pointer;">
+                Logout
+            </button>
+        </form>
+    </span>
+</nav>
 
-    <br><br>
+<div class="container">
 
-    <!-- Select player -->
-    <label>Player:</label>
-    <select name="playerId" required>
-        <option th:each="p : ${players}"
-                th:value="${p.id}"
-                th:text="${p.firstName + ' ' + p.lastName}">
-        </option>
-    </select>
+    <a th:href="@{/boxscores}" class="btn smallspace">Abort</a>
 
-    <br><br>
+    <h1>Create Box Score</h1>
 
-    <!-- Points -->
-    <label>Points:</label>
-    <input type="number" th:field="*{points}" required/>
+    <form th:action="@{/boxscores/save}" method="post" th:object="${boxscore}">
 
-    <br><br>
+        <label>Game:</label>
+        <select name="gameId" required>
+            <option th:each="g : ${games}"
+                    th:value="${g.id}"
+                    th:text="${g.homeTeam.name + ' vs ' + g.awayTeam.name}">
+            </option>
+        </select>
 
-    <!-- Rebounds -->
-    <label>Rebounds:</label>
-    <input type="number" th:field="*{rebounds}" required/>
+        <br><br>
 
-    <br><br>
+        <label>Player:</label>
+        <select name="playerId" required>
+            <option th:each="p : ${players}"
+                    th:value="${p.id}"
+                    th:text="${p.firstName + ' ' + p.lastName}">
+            </option>
+        </select>
 
-    <!-- Assists -->
-    <label>Assists:</label>
-    <input type="number" th:field="*{assists}" required/>
+        <br><br>
 
-    <br><br>
+        <label>Points:</label>
+        <input type="number" th:field="*{points}" required/>
+        <br><br>
 
-    <button type="submit">Save</button>
+        <label>Rebounds:</label>
+        <input type="number" th:field="*{rebounds}" required/>
+        <br><br>
 
-</form>
+        <label>Assists:</label>
+        <input type="number" th:field="*{assists}" required/>
+        <br><br>
+
+        <button type="submit" class="btn">Save</button>
+
+    </form>
+
+</div>
 
 </body>
 </html>

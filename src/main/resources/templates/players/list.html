@@ -1,26 +1,77 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Players</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+
 <body>
-<a th:href="@{/home}">Home</a>
-<h2>Players</h2>
-<a th:href="@{/players/create}">Create player</a>
-<table>
-    <thead><tr><th>ID</th><th>Name</th><th>Pos</th><th>Number</th><th>Team</th><th>Actions</th></tr></thead>
-    <tbody>
-    <tr th:each="p : ${players}">
-        <td th:text="${p.id}"></td>
-        <td th:text="${p.firstName + ' ' + p.lastName}"></td>
-        <td th:text="${p.position}"></td>
-        <td th:text="${p.number}"></td>
-        <td th:text="${p.team != null ? p.team.name : ''}"></td>
-        <td>
-            <a th:href="@{'/players/edit/' + ${p.id}}">Edit</a>
-            <form th:action="@{'/players/delete/' + ${p.id}}" method="post" style="display:inline">
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+
+<!-- NAVBAR -->
+<nav>
+    <a href="/" class="brand">🏀 Stats Project</a>
+
+    <a href="/players">Players</a>
+    <a href="/boxscores">Box Scores</a>
+
+    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+        <a href="/teams">Teams</a>
+        <a href="/games">Games</a>
+    </sec:authorize>
+
+    <span class="right">
+        <sec:authentication property="name"/> |
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit"
+                    style="background:none;border:none;color:#d1e7ff;cursor:pointer;">
+                Logout
+            </button>
+        </form>
+    </span>
+</nav>
+
+<div class="container">
+
+    <h2>Players</h2>
+
+    <a class="btn smallspace" th:href="@{/players/create}">Create Player</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Pos</th>
+            <th>Number</th>
+            <th>Team</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="p : ${players}">
+            <td th:text="${p.id}"></td>
+            <td th:text="${p.firstName + ' ' + p.lastName}"></td>
+            <td th:text="${p.position}"></td>
+            <td th:text="${p.number}"></td>
+            <td th:text="${p.team != null ? p.team.name : ''}"></td>
+
+            <td>
+                <a th:href="@{'/players/edit/' + ${p.id}}">Edit</a>
+
+                <form th:action="@{'/players/delete/' + ${p.id}}"
+                      method="post" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
 </body>
 </html>

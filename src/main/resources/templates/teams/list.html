@@ -1,25 +1,72 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Teams</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+
 <body>
-<a th:href="@{/home}">Home</a>
-<h2>Teams</h2>
-<a th:href="@{/teams/create}">Create team</a>
-<table>
-    <thead><tr><th>ID</th><th>Name</th><th>City</th><th>Actions</th></tr></thead>
-    <tbody>
-    <tr th:each="team : ${teams}">
-        <td th:text="${team.id}"></td>
-        <td th:text="${team.name}"></td>
-        <td th:text="${team.city}"></td>
-        <td>
-            <a th:href="@{'/teams/edit/' + ${team.id}}">Edit</a>
-            <form th:action="@{'/teams/delete/' + ${team.id}}" method="post"
-                  style="display:inline">
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+
+<nav>
+    <a href="/" class="brand">🏀 Stats Project</a>
+
+    <a href="/players">Players</a>
+    <a href="/boxscores">Box Scores</a>
+
+    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+        <a href="/teams">Teams</a>
+        <a href="/games">Games</a>
+    </sec:authorize>
+
+    <span class="right">
+        <sec:authentication property="name"/> |
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit"
+                    style="background:none;border:none;color:#d1e7ff;cursor:pointer;">
+                Logout
+            </button>
+        </form>
+    </span>
+</nav>
+
+<div class="container">
+
+    <h2>Teams</h2>
+
+    <a class="btn smallspace" th:href="@{/teams/create}">Create Team</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>City</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="team : ${teams}">
+            <td th:text="${team.id}"></td>
+            <td th:text="${team.name}"></td>
+            <td th:text="${team.city}"></td>
+
+            <td>
+                <a th:href="@{'/teams/edit/' + ${team.id}}">Edit</a>
+
+                <form th:action="@{'/teams/delete/' + ${team.id}}"
+                      method="post" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
 </body>
 </html>

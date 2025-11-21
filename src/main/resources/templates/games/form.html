@@ -1,53 +1,80 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <title>Create Game</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
 </head>
+
 <body>
 
-<a th:href="@{/games}">Abort</a>
+<!-- NAVBAR -->
+<nav>
+    <a href="/" class="brand">🏀 Stats Project</a>
 
-<h1>Create Game</h1>
+    <a href="/players">Players</a>
+    <a href="/boxscores">Box Scores</a>
 
-<form th:action="@{/games/save}" method="post" th:object="${game}">
+    <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+        <a href="/teams">Teams</a>
+        <a href="/games">Games</a>
+    </sec:authorize>
 
-    <!-- Date & Time -->
-    <label>Date & Time:</label>
-    <input type="datetime-local" name="dateTime" required />
-    <br><br>
+    <span class="right">
+        <sec:authentication property="name"/> |
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit"
+                    style="background:none;border:none;color:#d1e7ff;cursor:pointer;">
+                Logout
+            </button>
+        </form>
+    </span>
+</nav>
 
-    <!-- Home Team -->
-    <label>Home Team:</label>
-    <select name="homeTeamId" required>
-        <option th:each="t : ${teams}"
-                th:value="${t.id}"
-                th:text="${t.name}">
-        </option>
-    </select>
-    <br><br>
+<div class="container">
 
-    <!-- Away Team -->
-    <label>Away Team:</label>
-    <select name="awayTeamId" required>
-        <option th:each="t : ${teams}"
-                th:value="${t.id}"
-                th:text="${t.name}">
-        </option>
-    </select>
-    <br><br>
+    <a th:href="@{/games}" class="btn smallspace">Abort</a>
 
-    <!-- Home Score -->
-    <label>Home Score:</label>
-    <input type="number" name="homeScore" required />
-    <br><br>
+    <h1>Create Game</h1>
 
-    <!-- Away Score -->
-    <label>Away Score:</label>
-    <input type="number" name="awayScore" required />
-    <br><br>
+    <form th:action="@{/games/save}" method="post" th:object="${game}">
 
-    <button type="submit">Save</button>
-</form>
+        <label>Date & Time:</label>
+        <input type="datetime-local" name="dateTime" required/>
+        <br><br>
+
+        <label>Home Team:</label>
+        <select name="homeTeamId" required>
+            <option th:each="t : ${teams}"
+                    th:value="${t.id}"
+                    th:text="${t.name}">
+            </option>
+        </select>
+        <br><br>
+
+        <label>Away Team:</label>
+        <select name="awayTeamId" required>
+            <option th:each="t : ${teams}"
+                    th:value="${t.id}"
+                    th:text="${t.name}">
+            </option>
+        </select>
+        <br><br>
+
+        <label>Home Score:</label>
+        <input type="number" name="homeScore" required/>
+        <br><br>
+
+        <label>Away Score:</label>
+        <input type="number" name="awayScore" required/>
+        <br><br>
+
+        <button type="submit" class="btn">Save</button>
+
+    </form>
+
+</div>
 
 </body>
 </html>
