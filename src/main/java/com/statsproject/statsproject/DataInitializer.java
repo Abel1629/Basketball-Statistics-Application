@@ -117,6 +117,8 @@ public class DataInitializer implements CommandLineRunner {
         bs1.setPoints(35);
         bs1.setRebounds(8);
         bs1.setAssists(6);
+        bs1.setCreatedBy("Admin");
+        bs1.setStatus(Status.APPROVED);
 
         BoxScore bs2 = new BoxScore();
         bs2.setGame(g1);
@@ -124,6 +126,8 @@ public class DataInitializer implements CommandLineRunner {
         bs2.setPoints(30);
         bs2.setRebounds(4);
         bs2.setAssists(11);
+        bs2.setCreatedBy("Admin");
+        bs2.setStatus(Status.APPROVED);
 
         BoxScore bs3 = new BoxScore();
         bs3.setGame(g2);
@@ -131,6 +135,8 @@ public class DataInitializer implements CommandLineRunner {
         bs3.setPoints(11);
         bs3.setRebounds(9);
         bs3.setAssists(2);
+        bs3.setCreatedBy("Admin");
+        bs3.setStatus(Status.APPROVED);
 
         BoxScore bs4 = new BoxScore();
         bs4.setGame(g3);
@@ -138,6 +144,8 @@ public class DataInitializer implements CommandLineRunner {
         bs4.setPoints(16);
         bs4.setRebounds(12);
         bs4.setAssists(3);
+        bs4.setCreatedBy("Admin");
+        bs4.setStatus(Status.APPROVED);
 
         BoxScore bs5 = new BoxScore();
         bs5.setGame(g4);
@@ -145,6 +153,8 @@ public class DataInitializer implements CommandLineRunner {
         bs5.setPoints(19);
         bs5.setRebounds(5);
         bs5.setAssists(7);
+        bs5.setCreatedBy("User");
+        bs5.setStatus(Status.SUBMITTED);
 
         BoxScore bs6 = new BoxScore();
         bs6.setGame(g5);
@@ -152,6 +162,8 @@ public class DataInitializer implements CommandLineRunner {
         bs6.setPoints(22);
         bs6.setRebounds(10);
         bs6.setAssists(12);
+        bs6.setCreatedBy("User");
+        bs6.setStatus(Status.SUBMITTED);
 
         // you must save using repository
         boxScoreRepo.save(bs1);
